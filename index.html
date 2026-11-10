@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AI Email Assistant for Outlook</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script defer src="taskpane.js"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">AI</div>
+      <div>
+        <h1>AI Email Assistant</h1>
+        <p class="subheading">Summarize, understand, and draft — you stay in control.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="section-heading">
+        <h2>1. AI provider</h2>
+        <span class="tag">Multi-model</span>
+      </div>
+
+      <label for="provider">Provider</label>
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Google Gemini</option>
+        <option value="qwen">Alibaba Qwen / Model Studio</option>
+        <option value="anthropic">Anthropic Claude</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="openrouter">OpenRouter</option>
+        <option value="groq">Groq</option>
+        <option value="mistral">Mistral AI</option>
+        <option value="custom">Custom OpenAI-compatible API</option>
+      </select>
+
+      <label for="apiKey">API key</label>
+      <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your provider API key">
+      <p class="hint">The key stays in this task pane's memory and is not saved by this add-in. It is sent directly to the provider you select.</p>
+
+      <label for="model">Model ID</label>
+      <div class="inline-field">
+        <input id="model" type="text" list="modelSuggestions" spellcheck="false" placeholder="Choose or type a model ID">
+        <button id="loadModels" class="button button-secondary" type="button">Load models</button>
+      </div>
+      <datalist id="modelSuggestions"></datalist>
+
+      <details class="advanced">
+        <summary>Advanced API settings</summary>
+        <label for="endpoint">API endpoint</label>
+        <input id="endpoint" type="url" spellcheck="false" placeholder="Provider API endpoint">
+        <p id="endpointHint" class="hint"></p>
+        <label for="maxOutput">Maximum output tokens</label>
+        <input id="maxOutput" type="number" min="128" max="16000" value="1800">
+      </details>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <h2>2. Email context</h2>
+        <button id="loadEmail" class="button button-secondary" type="button">Load current email</button>
+      </div>
+      <div id="emailMeta" class="email-meta">No email loaded yet.</div>
+      <label for="emailContext">Email content / context</label>
+      <textarea id="emailContext" rows="9" placeholder="Click Load current email. You can also paste email text here."></textarea>
+      <p class="hint">Check the loaded text before sending it to an AI provider. Attachments are not read or uploaded.</p>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading"><h2>3. Assistant instructions</h2></div>
+      <div class="two-col">
+        <div>
+          <label for="tone">Reply tone</label>
+          <select id="tone">
+            <option value="Professional and courteous">Professional and courteous</option>
+            <option value="Formal business">Formal business</option>
+            <option value="Concise and direct">Concise and direct</option>
+            <option value="Friendly and natural">Friendly and natural</option>
+            <option value="Firm but respectful">Firm but respectful</option>
+            <option value="Diplomatic">Diplomatic</option>
+          </select>
+        </div>
+        <div>
+          <label for="language">Reply language</label>
+          <select id="language">
+            <option value="Same language as the email">Same as email</option>
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+            <option value="Spanish">Spanish</option>
+          </select>
+        </div>
+      </div>
+      <label for="extraInstructions">Additional instructions (optional)</label>
+      <textarea id="extraInstructions" rows="3" placeholder="Example: Keep it brief, preserve technical terms, and do not invent commitments or dates."></textarea>
+      <div class="action-grid">
+        <button id="summarize" class="button button-primary" type="button">Summarize email</button>
+        <button id="draftReply" class="button button-primary" type="button">Draft a reply</button>
+        <button id="improveDraft" class="button button-secondary" type="button">Improve current draft</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <h2>4. AI output</h2>
+        <span id="status" class="status" role="status" aria-live="polite">Ready</span>
+      </div>
+      <textarea id="output" rows="10" placeholder="Your AI summary or reply draft will appear here. Review it before using it."></textarea>
+      <div class="action-grid output-actions">
+        <button id="insertOutput" class="button button-primary" type="button">Insert into current draft</button>
+        <button id="openReply" class="button button-secondary" type="button">Open as a reply</button>
+      </div>
+      <p class="hint">This add-in never sends an email. It only inserts text into a draft or opens a reply window for your review.</p>
+    </section>
+
+    <footer>
+      <p>AI Email Assistant · API usage is billed by your selected provider.</p>
+      <p class="security-note">Privacy: email text is sent to the selected AI provider when you run an action. Do not process confidential or regulated information unless your organization's policies permit it.</p>
+    </footer>
+  </main>
+</body>
+</html>
